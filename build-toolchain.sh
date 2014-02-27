@@ -30,7 +30,7 @@ git submodule update
 clang++ -o "${PREFIX}/bin/ldid" ldid.cpp -I. -x c lookup2.c sha1.c
 
 cd "${PREFIX}/bin"
-ln -s cctools-codesign_allocate codesign_allocate
+ln -s darwin-codesign_allocate codesign_allocate
 for triple in powerpc-apple-darwin9 i386-apple-darwin9 x86_64-apple-darwin9 armv6-apple-darwin9 armv7-apple-darwin9
 do
   ln -s `which clang` $triple-clang
