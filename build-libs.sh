@@ -30,6 +30,43 @@ fi
 CC="${TARGET_TRIPLE}-clang -isysroot ${DARWIN_SDK} -mlinker-version=${LINKER_VERSION}"
 CXX="${TARGET_TRIPLE}-clang++ -isysroot ${DARWIN_SDK} -mlinker-version=${LINKER_VERSION}"
 
+tar xzvf ../libcxx-3.4.src.tar.gz || exit $?
+if [ $BUILD_LIBCXX -eq 1 ]
+then
+  tar xzvf ../libcxxabi-rev201497.tar.gz || exit $?
+  mkdir libcxxabi-build || exit $?
+  cd libcxxabi-build || exit $?
+  for src in ../libcxxabi-rev201497/src/*.cpp
+  do
+    $CXX ${CXXFLAGS} ${src} -I../libcxxabi-rev201497/include -I../libcxx-3.4/include -fstrict-aliasing -std=c++11 -c -o `basename ${src}`.o || exit $?
+  done
+  ${TARGET_TRIPLE}-ar rcs libc++abi.a *.o || exit $?
+  mkdir -p "${PREFIX}/lib" || exit $?
+  cp libc++abi.a "${PREFIX}/lib" || exit $?
+  mkdir -p "${PREFIX}/include/libcxxabi" || exit $?
+  cp -r ../libcxxabi-rev201497/include/* "${PREFIX}/include/libcxxabi" || exit $?
+  cd .. || exit $?
+fi
+
+mkdir libcxx-build || exit $?
+cd libcxx-build || exit $?
+cmake ../libcxx-3.4 -DCMAKE_SYSTEM_NAME=Generic "-DCMAKE_AR=${DARWIN_TOOLCHAIN}/bin/${TARGET_TRIPLE}-ar" "-DCMAKE_RANLIB=${DARWIN_TOOLCHAIN}/bin/${TARGET_TRIPLE}-ranlib" "-DCMAKE_CXX_COMPILER=${TARGET_TRIPLE}-clang++" "-DCMAKE_CXX_FLAGS=-isysroot ${DARWIN_SDK} -mlinker-version=${LINKER_VERSION} ${CXXFLAGS}" -DLIBCXX_CXX_ABI=libcxxabi "-DLIBCXX_LIBCXXABI_INCLUDE_PATHS=${PREFIX}/include/libcxxabi" -DCMAKE_BUILD_TYPE=Release -DLIBCXX_ENABLE_SHARED=false -DLIBCXX_TARGET_TRIPLE=${TARGET_TRIPLE} "-DCMAKE_INSTALL_PREFIX=${PREFIX}" || exit $?
+if [ $BUILD_LIBCXX -eq 1 ]
+then
+  make -j6 || exit $?
+  make install || exit $?
+else
+  mkdir -p "${PREFIX}/include/c++" || exit $?
+  cp -r include/c++/* "${PREFIX}/include/c++" || exit $?
+fi
+cd .. || exit $?
+
+tar xzvf ../zlib-1.2.8.tar.gz || exit $?
+cd zlib-1.2.8 || exit $?
+./configure --static "--prefix=${PREFIX}" || exit $?
+make "CC=$CC" "CFLAGS=${CFLAGS}" AR=${TARGET_TRIPLE}-ar RANLIB=${TARGET_TRIPLE}-ranlib install || exit $?
+cd .. || exit $?
+
 tar xzvf ../libpng-1.6.8.tar.gz || exit $?
 cd libpng-1.6.8 || exit $?
 ./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
@@ -61,6 +98,7 @@ cd ../../.. || exit $?
 
 tar xzvf ../SDL2-2.0.1.tar.gz || exit $?
 cd SDL2-2.0.1 || exit $?
+patch -Np1 -i ../../SDL2-2.0.1-fix-battery-percent-uikit.diff || exit $?
 if [ "${TARGET_TYPE}" == "osx" ]
 then
   sed -i 's/-falign-loops=16//g' configure.in || exit $?
@@ -73,6 +111,19 @@ then
 fi
 make -j6 || exit $?
 make install || exit $?
+cd .. || exit $?
+
+tar xzvf ../SDL2_mixer-2.0.0.tar.gz || exit $?
+cd SDL2_mixer-2.0.0 || exit $?
+cd external/libmodplug-0.8.8.4
+./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
+make -j6 || exit $?
+make install || exit $?
+cd ../../ || exit $?
+PKG_CONFIG_PATH="${PREFIX}/lib/pkgconfig" ./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" --with-sdl-prefix="${PREFIX}" --enable-music-midi-native=no CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
+make LDFLAGS="-lstdc++" -j6 || exit $?
+make install || exit $?
+sed -i "s/Requires:/Requires: libmodplug/g" "${PREFIX}/lib/pkgconfig/SDL2_mixer.pc" || exit $?
 cd .. || exit $?
 
 if [ "${TARGET_TYPE}" == "osx" ]
