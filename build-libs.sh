@@ -50,14 +50,14 @@ fi
 
 mkdir libcxx-build || exit $?
 cd libcxx-build || exit $?
-cmake ../libcxx-3.4 -DCMAKE_SYSTEM_NAME=Generic "-DCMAKE_AR=${DARWIN_TOOLCHAIN}/bin/${TARGET_TRIPLE}-ar" "-DCMAKE_RANLIB=${DARWIN_TOOLCHAIN}/bin/${TARGET_TRIPLE}-ranlib" "-DCMAKE_CXX_COMPILER=${TARGET_TRIPLE}-clang++" "-DCMAKE_CXX_FLAGS=-isysroot ${DARWIN_SDK} -mlinker-version=${LINKER_VERSION} ${CXXFLAGS}" -DLIBCXX_CXX_ABI=libcxxabi "-DLIBCXX_LIBCXXABI_INCLUDE_PATHS=${PREFIX}/include/libcxxabi" -DCMAKE_BUILD_TYPE=Release -DLIBCXX_ENABLE_SHARED=false -DLIBCXX_TARGET_TRIPLE=${TARGET_TRIPLE} "-DCMAKE_INSTALL_PREFIX=${PREFIX}" || exit $?
 if [ $BUILD_LIBCXX -eq 1 ]
 then
+  cmake ../libcxx-3.4 -DCMAKE_SYSTEM_NAME=Generic "-DCMAKE_AR=${DARWIN_TOOLCHAIN}/bin/${TARGET_TRIPLE}-ar" "-DCMAKE_RANLIB=${DARWIN_TOOLCHAIN}/bin/${TARGET_TRIPLE}-ranlib" "-DCMAKE_CXX_COMPILER=${TARGET_TRIPLE}-clang++" "-DCMAKE_CXX_FLAGS=-isysroot ${DARWIN_SDK} -mlinker-version=${LINKER_VERSION} ${CXXFLAGS}" -DLIBCXX_CXX_ABI=libcxxabi "-DLIBCXX_LIBCXXABI_INCLUDE_PATHS=${PREFIX}/include/libcxxabi" -DCMAKE_BUILD_TYPE=Release -DLIBCXX_ENABLE_SHARED=false -DLIBCXX_TARGET_TRIPLE=${TARGET_TRIPLE} "-DCMAKE_INSTALL_PREFIX=${PREFIX}" || exit $?
   make -j6 || exit $?
   make install || exit $?
 else
-  mkdir -p "${PREFIX}/include/c++" || exit $?
-  cp -r include/c++/* "${PREFIX}/include/c++" || exit $?
+  mkdir -p "${PREFIX}/include/c++/v1" || exit $?
+  cp -r ../libcxx-3.4/include/* "${PREFIX}/include/c++/v1" || exit $?
 fi
 cd .. || exit $?
 
