@@ -14,4 +14,5 @@ wget http://www.libsdl.org/release/SDL-1.2.15.tar.gz
 wget https://bugzilla.libsdl.org/attachment.cgi?id=1558 -O SDL2-2.0.1-fix-battery-percent-uikit.diff
 wget http://ftp.gnu.org/gnu/gettext/gettext-0.18.3.tar.gz
 wget http://sourceforge.net/projects/libpng/files/zlib/1.2.8/zlib-1.2.8.tar.gz
+wget http://downloads.sourceforge.net/project/libpng/libpng16/1.6.9/libpng-1.6.9.tar.gz
 

@@ -67,8 +67,8 @@ cd zlib-1.2.8 || exit $?
 make "CC=$CC" "CFLAGS=${CFLAGS}" AR=${TARGET_TRIPLE}-ar RANLIB=${TARGET_TRIPLE}-ranlib install || exit $?
 cd .. || exit $?
 
-tar xzvf ../libpng-1.6.8.tar.gz || exit $?
-cd libpng-1.6.8 || exit $?
+tar xzvf ../libpng-1.6.9.tar.gz || exit $?
+cd libpng-1.6.9 || exit $?
 ./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
 make -j6 || exit $?
 make install || exit $?
