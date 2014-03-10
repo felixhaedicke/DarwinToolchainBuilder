@@ -47,11 +47,11 @@ CMAKE_TOOLCHAIN_FILE="${TOOLS_DIR}/toolchain.cmake"
 mkdir -p ${TOOLS_DIR} || exit $?
 
 echo \#!/bin/bash > ${CLANG_WRAPPER_FILE} || exit $?
-echo ${DARWIN_TOOLCHAIN}/bin/${TARGET_TRIPLE}-clang -isysroot ${DARWIN_SDK} -mlinker-version=${LINKER_VERSION} \$@ >> ${CLANG_WRAPPER_FILE} || exit $?
+echo ${DARWIN_TOOLCHAIN}/bin/clang -target ${TARGET_TRIPLE} -isysroot ${DARWIN_SDK} -mlinker-version=${LINKER_VERSION} \$@ >> ${CLANG_WRAPPER_FILE} || exit $?
 chmod +x ${CLANG_WRAPPER_FILE} || exit $?
 
 echo \#!/bin/bash > ${CLANGXX_WRAPPER_FILE} || exit $?
-echo ${DARWIN_TOOLCHAIN}/bin/${TARGET_TRIPLE}-clang++ -isysroot ${DARWIN_SDK} -mlinker-version=${LINKER_VERSION} \$@ >> ${CLANGXX_WRAPPER_FILE} || exit $?
+echo ${DARWIN_TOOLCHAIN}/bin/clang++ -target ${TARGET_TRIPLE} -isysroot ${DARWIN_SDK} -mlinker-version=${LINKER_VERSION} \$@ >> ${CLANGXX_WRAPPER_FILE} || exit $?
 chmod +x ${CLANGXX_WRAPPER_FILE} || exit $?
 
 CC="${CLANG_WRAPPER_FILE}"
