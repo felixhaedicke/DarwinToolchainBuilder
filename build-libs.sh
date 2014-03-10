@@ -27,8 +27,33 @@ then
   exit 1
 fi
 
-CC="${TARGET_TRIPLE}-clang -isysroot ${DARWIN_SDK} -mlinker-version=${LINKER_VERSION}"
-CXX="${TARGET_TRIPLE}-clang++ -isysroot ${DARWIN_SDK} -mlinker-version=${LINKER_VERSION}"
+TOOLS_DIR="${PREFIX}/tools"
+CLANG_WRAPPER_FILE="${TOOLS_DIR}/cc"
+CLANGXX_WRAPPER_FILE="${TOOLS_DIR}/c++"
+CMAKE_TOOLCHAIN_FILE="${TOOLS_DIR}/toolchain.cmake"
+
+mkdir -p ${TOOLS_DIR} || exit $?
+
+echo \#!/bin/bash > ${CLANG_WRAPPER_FILE} || exit $?
+echo ${DARWIN_TOOLCHAIN}/bin/${TARGET_TRIPLE}-clang -isysroot ${DARWIN_SDK} -mlinker-version=${LINKER_VERSION} \$@ >> ${CLANG_WRAPPER_FILE} || exit $?
+chmod +x ${CLANG_WRAPPER_FILE} || exit $?
+
+echo \#!/bin/bash > ${CLANGXX_WRAPPER_FILE} || exit $?
+echo ${DARWIN_TOOLCHAIN}/bin/${TARGET_TRIPLE}-clang++ -isysroot ${DARWIN_SDK} -mlinker-version=${LINKER_VERSION} \$@ >> ${CLANGXX_WRAPPER_FILE} || exit $?
+chmod +x ${CLANGXX_WRAPPER_FILE} || exit $?
+
+CC="${CLANG_WRAPPER_FILE}"
+CXX="${CLANGXX_WRAPPER_FILE}"
+
+if [ -f ${CMAKE_TOOLCHAIN_FILE} ]
+then
+  rm ${CMAKE_TOOLCHAIN_FILE} || exit $?
+fi
+echo set\(CMAKE_SYSTEM_NAME Generic\) >> ${CMAKE_TOOLCHAIN_FILE} || exit $?
+echo set\(CMAKE_C_COMPILER \"${CLANG_WRAPPER_FILE}\"\) >> ${CMAKE_TOOLCHAIN_FILE} || exit $?
+echo set\(CMAKE_CXX_COMPILER \"${CLANGXX_WRAPPER_FILE}\"\) >> ${CMAKE_TOOLCHAIN_FILE} || exit $?
+echo set\(CMAKE_AR \"${DARWIN_TOOLCHAIN}/bin/${TARGET_TRIPLE}-ar\" CACHE FILEPATH \"Archiver\"\) >> ${CMAKE_TOOLCHAIN_FILE} || exit $?
+echo set\(CMAKE_RANLIB \"${DARWIN_TOOLCHAIN}/bin/${TARGET_TRIPLE}-ranlib\"\) >> ${CMAKE_TOOLCHAIN_FILE} || exit $?
 
 tar xzvf ../libcxx-3.4.src.tar.gz || exit $?
 if [ $BUILD_LIBCXX -eq 1 ]
@@ -38,8 +63,10 @@ then
   cd libcxxabi-build || exit $?
   for src in ../libcxxabi-rev201497/src/*.cpp
   do
+    echo CXX ${src}
     $CXX ${CXXFLAGS} ${src} -I../libcxxabi-rev201497/include -I../libcxx-3.4/include -fstrict-aliasing -std=c++11 -c -o `basename ${src}`.o || exit $?
   done
+  echo AR libc++abi.a
   ${TARGET_TRIPLE}-ar rcs libc++abi.a *.o || exit $?
   mkdir -p "${PREFIX}/lib" || exit $?
   cp libc++abi.a "${PREFIX}/lib" || exit $?
@@ -52,7 +79,7 @@ mkdir libcxx-build || exit $?
 cd libcxx-build || exit $?
 if [ $BUILD_LIBCXX -eq 1 ]
 then
-  cmake ../libcxx-3.4 -DCMAKE_SYSTEM_NAME=Generic "-DCMAKE_AR=${DARWIN_TOOLCHAIN}/bin/${TARGET_TRIPLE}-ar" "-DCMAKE_RANLIB=${DARWIN_TOOLCHAIN}/bin/${TARGET_TRIPLE}-ranlib" "-DCMAKE_CXX_COMPILER=${TARGET_TRIPLE}-clang++" "-DCMAKE_CXX_FLAGS=-isysroot ${DARWIN_SDK} -mlinker-version=${LINKER_VERSION} ${CXXFLAGS}" -DLIBCXX_CXX_ABI=libcxxabi "-DLIBCXX_LIBCXXABI_INCLUDE_PATHS=${PREFIX}/include/libcxxabi" -DCMAKE_BUILD_TYPE=Release -DLIBCXX_ENABLE_SHARED=false -DLIBCXX_TARGET_TRIPLE=${TARGET_TRIPLE} "-DCMAKE_INSTALL_PREFIX=${PREFIX}" || exit $?
+  cmake ../libcxx-3.4 "-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}" -DLIBCXX_CXX_ABI=libcxxabi "-DLIBCXX_LIBCXXABI_INCLUDE_PATHS=${PREFIX}/include/libcxxabi" -DCMAKE_BUILD_TYPE=Release -DLIBCXX_ENABLE_SHARED=false -DLIBCXX_TARGET_TRIPLE=${TARGET_TRIPLE} "-DCMAKE_INSTALL_PREFIX=${PREFIX}" || exit $?
   make -j6 || exit $?
   make install || exit $?
 else
