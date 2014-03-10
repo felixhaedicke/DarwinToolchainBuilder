@@ -96,6 +96,7 @@ then
   make install || exit $?
 else
   mkdir -p "${PREFIX}/include/c++/v1" || exit $?
+  rm ../libcxx-3.4/include/CMakeLists.txt || exit $?
   cp -r ../libcxx-3.4/include/* "${PREFIX}/include/c++/v1" || exit $?
 fi
 cd .. || exit $?
