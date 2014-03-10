@@ -24,6 +24,10 @@ make PROGRAM_PREFIX=darwin- -j6 || exit $?
 make install || exit $?
 
 cd "${PREFIX}/bin" || exit $?
+ln -s `which clang` clang || exit $?
+ln -s `which clang++` clang++ || exit $?
+ln -s `which clang` cc || exit $?
+ln -s `which clang++` c++ || exit $?
 ln -s darwin-codesign_allocate codesign_allocate || exit $?
 for triple in powerpc-apple-darwin9 i386-apple-darwin9 x86_64-apple-darwin9 armv6-apple-darwin9 armv7-apple-darwin9
 do
