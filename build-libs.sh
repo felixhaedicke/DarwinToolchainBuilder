@@ -11,6 +11,18 @@ fi
 
 . "${TARGET_DESC}.shinc" || exit $?
 
+if [ "${TARGET_TYPE}" == "osx" ]
+then
+  DARWIN_SDK=${DARWIN_TOOLCHAIN}/lib/SDKs/MacOSX${DARWIN_SDK_VERSION}.sdk
+elif [ "${TARGET_TYPE}" == "ios" ]
+then
+  DARWIN_SDK=${DARWIN_TOOLCHAIN}/lib/SDKs/iPhoneOS${DARWIN_SDK_VERSION}.sdk
+else
+  echo "Unsupported target type \"${TARGET_TYPE}\". Valid types are osx and ios" >&2
+  exit 1
+fi
+echo $DARWIN_SDK
+
 PATH="${DARWIN_TOOLCHAIN}/bin:${PATH}"
 
 WORKING_DIR="${PWD}"
