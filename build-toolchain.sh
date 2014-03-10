@@ -11,33 +11,33 @@ fi
 WORKING_DIR="${PWD}"
 BUILD_TMP_DIR="darwin-toolchain-build-temp"
 
-rm -rf "${BUILD_TMP_DIR}"
-mkdir "${BUILD_TMP_DIR}"
+rm -rf "${BUILD_TMP_DIR}" || exit $?
+mkdir "${BUILD_TMP_DIR}" || exit $?
 
-cd "${BUILD_TMP_DIR}"
+cd "${BUILD_TMP_DIR}" || exit $?
 
-git clone https://github.com/felixhaedicke/cctools-port.git
-cd cctools-port/cctools
-./autogen.sh
-./configure "--prefix=${PREFIX}" --program-prefix=darwin-
-make PROGRAM_PREFIX=darwin- -j6
-make install
+git clone https://github.com/felixhaedicke/cctools-port.git || exit $?
+cd cctools-port/cctools || exit $?
+./autogen.sh || exit $?
+./configure "--prefix=${PREFIX}" --program-prefix=darwin- || exit $?
+make PROGRAM_PREFIX=darwin- -j6 || exit $?
+make install || exit $?
 
-cd "${PREFIX}/bin"
-ln -s darwin-codesign_allocate codesign_allocate
+cd "${PREFIX}/bin" || exit $?
+ln -s darwin-codesign_allocate codesign_allocate || exit $?
 for triple in powerpc-apple-darwin9 i386-apple-darwin9 x86_64-apple-darwin9 armv6-apple-darwin9 armv7-apple-darwin9
 do
-  ln -s `which clang` $triple-clang
-  ln -s `which clang++` $triple-clang++
-  ln -s darwin-as $triple-as
-  ln -s darwin-nm $triple-nm
-  ln -s darwin-ranlib $triple-ranlib
-  ln -s darwin-ar $triple-ar
-  ln -s darwin-ld $triple-ld
-  ln -s darwin-strip $triple-strip
-  ln -s darwin-libtool $triple-libtool
+  ln -s `which clang` $triple-clang || exit $?
+  ln -s `which clang++` $triple-clang++ || exit $?
+  ln -s darwin-as $triple-as || exit $?
+  ln -s darwin-nm $triple-nm || exit $?
+  ln -s darwin-ranlib $triple-ranlib || exit $?
+  ln -s darwin-ar $triple-ar || exit $?
+  ln -s darwin-ld $triple-ld || exit $?
+  ln -s darwin-strip $triple-strip || exit $?
+  ln -s darwin-libtool $triple-libtool || exit $?
 done
 
-cd "${WORKING_DIR}"
-rm -rf "${BUILD_TMP_DIR}"
+cd "${WORKING_DIR}" || exit $?
+rm -rf "${BUILD_TMP_DIR}" || exit $?
 
