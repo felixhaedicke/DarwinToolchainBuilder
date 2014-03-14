@@ -168,6 +168,13 @@ make install || exit $?
 sed -i "s/Requires:/Requires: libmodplug/g" "${PREFIX}/lib/pkgconfig/SDL2_mixer.pc" || exit $?
 cd .. || exit $?
 
+tar xzvf ../SDL2_net-2.0.0.tar.gz || exit $?
+cd SDL2_net-2.0.0 || exit $?
+./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" --with-sdl-prefix="${PREFIX}" CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
+make -j6 || exit $?
+make install || exit $?
+cd .. || exit $?
+
 if [ "${TARGET_TYPE}" == "osx" ]
 then
   tar xzvf ../SDL-1.2.15.tar.gz || exit $?
