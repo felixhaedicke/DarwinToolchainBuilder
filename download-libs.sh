@@ -5,7 +5,6 @@ tar czvf libcxxabi-rev201497.tar.gz libcxxabi-rev201497 || exit $?
 rm -rf libcxxabi-rev201497 || exit $?
 
 wget http://llvm.org/releases/3.4/libcxx-3.4.src.tar.gz || exit $?
-wget http://sourceforge.net/projects/libpng/files/libpng16/1.6.8/libpng-1.6.8.tar.gz || exit $?
 wget http://download.savannah.gnu.org/releases/freetype/freetype-2.4.12.tar.gz || exit $?
 wget http://ijg.org/files/jpegsrc.v9.tar.gz || exit $?
 wget http://libsdl.org/release/SDL2-2.0.2.tar.gz || exit $?
