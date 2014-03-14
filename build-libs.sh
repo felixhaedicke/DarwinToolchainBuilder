@@ -101,11 +101,14 @@ else
 fi
 cd .. || exit $?
 
-tar xzvf ../zlib-1.2.8.tar.gz || exit $?
-cd zlib-1.2.8 || exit $?
-./configure --static "--prefix=${PREFIX}" || exit $?
-make "CC=$CC" "CFLAGS=${CFLAGS}" AR=${TARGET_TRIPLE}-ar RANLIB=${TARGET_TRIPLE}-ranlib install || exit $?
-cd .. || exit $?
+if [ $BUILD_ZLIB -eq 1 ]
+then
+  tar xzvf ../zlib-1.2.8.tar.gz || exit $?
+  cd zlib-1.2.8 || exit $?
+  ./configure --static "--prefix=${PREFIX}" || exit $?
+  make "CC=$CC" "CFLAGS=${CFLAGS}" AR=${TARGET_TRIPLE}-ar RANLIB=${TARGET_TRIPLE}-ranlib install || exit $?
+  cd .. || exit $?
+fi
 
 tar xzvf ../libpng-1.6.9.tar.gz || exit $?
 cd libpng-1.6.9 || exit $?
