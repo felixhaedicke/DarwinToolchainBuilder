@@ -124,8 +124,8 @@ make -j6 || exit $?
 make install || exit $?
 cd .. || exit $?
 
-tar xzvf ../jpegsrc.v9.tar.gz || exit $?
-cd jpeg-9 || exit $?
+tar xzvf ../libjpeg-turbo-1.3.0.tar.gz || exit $?
+cd libjpeg-turbo-1.3.0 || exit $?
 ./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
 make -j6 || exit $?
 make install || exit $?
