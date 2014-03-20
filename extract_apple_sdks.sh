@@ -44,8 +44,20 @@ else
     then
       is_ios_sdk=1
     fi
+
+    tmp_dir=${sdk_dir_basename}_tmp
+
+    if [ -d "${tmp_dir}" ]
+    then
+      echo Temporary directory ${tmp_dir} exits already. Delete it to prceed >&2
+      exit 1
+    fi
+
+    mkdir ${tmp_dir} || exit $?
+
+    echo Extracting SDK from ${sdk_dir} using temporary directory ${tmp_dir}...
     
-    cp -R $sdk_dir . || exit $?
+    cp -R ${sdk_dir} ${tmp_dir} || exit $?
     
     libarc_src_dir=${sdk_dir}/../../../../../Toolchains/XcodeDefault.xctoolchain/usr/lib/arc
     libarc_src_filepath=${libarc_src_dir}/libarclite_macosx.a
@@ -56,16 +68,22 @@ else
     
     if [ -f "${libarc_src_filepath}" ]
     then
-      arc_target_dir="${sdk_dir_basename}/usr/lib/arc"
+      arc_target_dir="${tmp_dir}/${sdk_dir_basename}/usr/lib/arc"
       if [ ! -d "${arc_target_dir}" ]
       then
         mkdir "${arc_target_dir}" || exit $?
       fi
       cp "${libarc_src_filepath}" "${arc_target_dir}" || exit $?
+    else
+      echo Not extracting libarc, because the library was not found in ${libarc_src_filepath}
     fi
 
-    tar czf $sdk_dir_basename.tar.gz $sdk_dir_basename
-    rm -rf $sdk_dir_basename
+    cd ${tmp_dir} || exit $?
+    echo Creating $sdk_dir_basename.tar.gz...
+    tar czf ../$sdk_dir_basename.tar.gz $sdk_dir_basename
+    cd ..
+    echo Deleting temporary directory ${tmp_dir}...
+    rm -rf ${tmp_dir}
   else
     echo SDK directory $sdk_dir does not exist! >&2
     exit 1;
