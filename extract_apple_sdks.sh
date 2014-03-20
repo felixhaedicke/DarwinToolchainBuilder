@@ -45,7 +45,7 @@ else
       is_ios_sdk=1
     fi
     
-    cp -R $sdk_dir .
+    cp -R $sdk_dir . || exit $?
     
     libcxx_headers_src_dir=${sdk_dir}/../../../../../Toolchains/XcodeDefault.xctoolchain/usr/lib/c++/v1
     libarc_src_dir=${sdk_dir}/../../../../../Toolchains/XcodeDefault.xctoolchain/usr/lib/arc
@@ -69,7 +69,7 @@ else
       arc_target_dir="${sdk_dir_basename}/usr/lib/arc"
       if [ ! -d "${arc_target_dir}" ]
       then
-        mkdir "${arc_target_dir}"
+        mkdir "${arc_target_dir}" || exit $?
       fi
       cp "${libarc_src_filepath}" "${arc_target_dir}" || exit $?
     fi
