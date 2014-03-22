@@ -72,9 +72,9 @@ echo set\(CMAKE_CXX_COMPILER \"${CLANGXX_WRAPPER_FILE}\"\) >> ${CMAKE_TOOLCHAIN_
 echo set\(CMAKE_AR \"${DARWIN_TOOLCHAIN}/bin/${TARGET_TRIPLE}-ar\" CACHE FILEPATH \"Archiver\"\) >> ${CMAKE_TOOLCHAIN_FILE} || exit $?
 echo set\(CMAKE_RANLIB \"${DARWIN_TOOLCHAIN}/bin/${TARGET_TRIPLE}-ranlib\"\) >> ${CMAKE_TOOLCHAIN_FILE} || exit $?
 
-tar xzvf ../libcxx-3.4.src.tar.gz || exit $?
 if [ $BUILD_LIBCXX -eq 1 ]
 then
+  tar xzvf ../libcxx-3.4.src.tar.gz || exit $?
   tar xzvf ../libcxxabi-rev201497.tar.gz || exit $?
   mkdir libcxxabi-build || exit $?
   cd libcxxabi-build || exit $?
@@ -90,21 +90,14 @@ then
   mkdir -p "${PREFIX}/include/libcxxabi" || exit $?
   cp -r ../libcxxabi-rev201497/include/* "${PREFIX}/include/libcxxabi" || exit $?
   cd .. || exit $?
-fi
 
-mkdir libcxx-build || exit $?
-cd libcxx-build || exit $?
-if [ $BUILD_LIBCXX -eq 1 ]
-then
+  mkdir libcxx-build || exit $?
+  cd libcxx-build || exit $?
   cmake ../libcxx-3.4 "-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}" -DLIBCXX_CXX_ABI=libcxxabi "-DLIBCXX_LIBCXXABI_INCLUDE_PATHS=${PREFIX}/include/libcxxabi" -DCMAKE_BUILD_TYPE=Release -DLIBCXX_ENABLE_SHARED=false -DLIBCXX_TARGET_TRIPLE=${TARGET_TRIPLE} "-DCMAKE_INSTALL_PREFIX=${PREFIX}" || exit $?
   make -j6 || exit $?
   make install || exit $?
-else
-  mkdir -p "${PREFIX}/include/c++/v1" || exit $?
-  rm ../libcxx-3.4/include/CMakeLists.txt || exit $?
-  cp -r ../libcxx-3.4/include/* "${PREFIX}/include/c++/v1" || exit $?
+  cd .. || exit $?
 fi
-cd .. || exit $?
 
 if [ $BUILD_ZLIB -eq 1 ]
 then
