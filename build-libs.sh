@@ -16,7 +16,7 @@ else
   TARGET_DESC=$2
 fi
 
-if [ $BUILD_ON_DARWIN -eq 1 ] && [ "${DARWIN_TOOLCHAIN}" == "" ] || [ "${TARGET_DESC}" == "" ]
+if [ $# -ne 2 ]
 then
   if [ $BUILD_ON_DARWIN -eq 1 ]
   then
@@ -42,7 +42,7 @@ then
   fi
   if [ $BUILD_ON_DARWIN -eq 1 ]
   then
-    DARWIN_SDK=/Application/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX${DARWIN_SDK_VERSION}.sdk
+    DARWIN_SDK=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX${DARWIN_SDK_VERSION}.sdk
   else
     DARWIN_SDK=${DARWIN_TOOLCHAIN}/lib/SDKs/MacOSX${DARWIN_SDK_VERSION}.sdk
   fi
@@ -54,7 +54,7 @@ then
   fi
   if [ $BUILD_ON_DARWIN -eq 1 ]
   then
-    DARWIN_SDK=/Application/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS${DARWIN_SDK_VERSION}.sdk
+    DARWIN_SDK=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS${DARWIN_SDK_VERSION}.sdk
   else
     DARWIN_SDK=${DARWIN_TOOLCHAIN}/lib/SDKs/iPhoneOS${DARWIN_SDK_VERSION}.sdk
   fi
@@ -201,7 +201,7 @@ tar xzvf ../SDL2-2.0.3.tar.gz || exit $?
 cd SDL2-2.0.3 || exit $?
 if [ "${TARGET_TYPE}" == "osx" ]
 then
-  sed -i 's/-falign-loops=16//g' configure.in || exit $?
+  sed -i".bak" 's/-falign-loops=16//g' configure.in || exit $?
   ./autogen.sh || exit $?
 fi
 ./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
@@ -223,7 +223,8 @@ cd ../../ || exit $?
 PKG_CONFIG_PATH="${PREFIX}/lib/pkgconfig" ./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" --with-sdl-prefix="${PREFIX}" --enable-music-midi-native=no CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
 make LDFLAGS="-lstdc++" -j6 || exit $?
 make install || exit $?
-sed -i "s/Requires:/Requires: libmodplug/g" "${PREFIX}/lib/pkgconfig/SDL2_mixer.pc" || exit $?
+sed -i".bak" "s/Requires:/Requires: libmodplug/g" "${PREFIX}/lib/pkgconfig/SDL2_mixer.pc" || exit $?
+rm -rf "${PREFIX}/lib/pkgconfig"/*.bak || exit $?
 cd .. || exit $?
 
 tar xzvf ../SDL2_net-2.0.0.tar.gz || exit $?
