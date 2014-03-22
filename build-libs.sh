@@ -199,11 +199,6 @@ cd ../../.. || exit $?
 
 tar xzvf ../SDL2-2.0.3.tar.gz || exit $?
 cd SDL2-2.0.3 || exit $?
-if [ "${TARGET_TYPE}" == "osx" ]
-then
-  sed -i".bak" 's/-falign-loops=16//g' configure.in || exit $?
-  ./autogen.sh || exit $?
-fi
 ./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
 if [ "${TARGET_TYPE}" == "ios" ]
 then
