@@ -168,8 +168,8 @@ then
   cd .. || exit $?
 fi
 
-tar xzvf ../libpng-1.6.9.tar.gz || exit $?
-cd libpng-1.6.9 || exit $?
+tar xzvf ../libpng-1.6.10.tar.gz || exit $?
+cd libpng-1.6.10 || exit $?
 ./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
 make -j6 || exit $?
 make install || exit $?

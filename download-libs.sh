@@ -12,5 +12,5 @@ curl -L -O http://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-2.0.0.tar
 curl -L -O http://www.libsdl.org/projects/SDL_net/release/SDL2_net-2.0.0.tar.gz || exit $?
 curl -L -O http://ftp.gnu.org/gnu/gettext/gettext-0.18.3.tar.gz || exit $?
 curl -L -O http://sourceforge.net/projects/libpng/files/zlib/1.2.8/zlib-1.2.8.tar.gz || exit $?
-curl -L -O http://downloads.sourceforge.net/project/libpng/libpng16/1.6.9/libpng-1.6.9.tar.gz || exit $?
+curl -L -O http://sourceforge.net/projects/libpng/files/libpng16/1.6.10/libpng-1.6.10.tar.gz || exit $?
 
