@@ -10,7 +10,6 @@ wget http://sourceforge.net/projects/libjpeg-turbo/files/1.3.0/libjpeg-turbo-1.3
 wget http://libsdl.org/release/SDL2-2.0.3.tar.gz || exit $?
 wget http://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-2.0.0.tar.gz || exit $?
 wget http://www.libsdl.org/projects/SDL_net/release/SDL2_net-2.0.0.tar.gz || exit $?
-wget http://www.libsdl.org/release/SDL-1.2.15.tar.gz || exit $?
 wget http://ftp.gnu.org/gnu/gettext/gettext-0.18.3.tar.gz || exit $?
 wget http://sourceforge.net/projects/libpng/files/zlib/1.2.8/zlib-1.2.8.tar.gz || exit $?
 wget http://downloads.sourceforge.net/project/libpng/libpng16/1.6.9/libpng-1.6.9.tar.gz || exit $?
