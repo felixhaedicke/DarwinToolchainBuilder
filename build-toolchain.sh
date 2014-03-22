@@ -29,6 +29,8 @@ for triple in powerpc-apple-darwin9 i386-apple-darwin9 x86_64-apple-darwin9 armv
 do
   ln -s `which clang` $triple-clang || exit $?
   ln -s `which clang++` $triple-clang++ || exit $?
+  ln -s `which clang` $triple-cc || exit $?
+  ln -s `which clang++` $triple-c++ || exit $?
   ln -s darwin-as $triple-as || exit $?
   ln -s darwin-nm $triple-nm || exit $?
   ln -s darwin-ranlib $triple-ranlib || exit $?
