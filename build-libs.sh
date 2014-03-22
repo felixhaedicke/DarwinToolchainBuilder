@@ -139,8 +139,8 @@ make -j6 || exit $?
 make install || exit $?
 cd ../../.. || exit $?
 
-tar xzvf ../SDL2-2.0.2.tar.gz || exit $?
-cd SDL2-2.0.2 || exit $?
+tar xzvf ../SDL2-2.0.3.tar.gz || exit $?
+cd SDL2-2.0.3 || exit $?
 if [ "${TARGET_TYPE}" == "osx" ]
 then
   sed -i 's/-falign-loops=16//g' configure.in || exit $?
