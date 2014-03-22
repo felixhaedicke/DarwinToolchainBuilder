@@ -1,11 +1,29 @@
 #!/bin/bash
 
-DARWIN_TOOLCHAIN=$1
-TARGET_DESC=$2
-
-if [ "${DARWIN_TOOLCHAIN}" == "" ] || [ "${TARGET_DESC}" == "" ]
+BUILD_ON_DARWIN=0
+if [ "`uname`" == "Darwin" ]
 then
-  echo "Usage: <Darwin Toolchain Directory> <Target Descriptor>" >&2
+  BUILD_ON_DARWIN=1
+fi
+
+if [ $BUILD_ON_DARWIN -eq 1 ]
+then
+  PREFIX=$1
+  TARGET_DESC=$2
+else
+  PREFIX=""
+  DARWIN_TOOLCHAIN=$1
+  TARGET_DESC=$2
+fi
+
+if [ $BUILD_ON_DARWIN -eq 1 ] && [ "${DARWIN_TOOLCHAIN}" == "" ] || [ "${TARGET_DESC}" == "" ]
+then
+  if [ $BUILD_ON_DARWIN -eq 1 ]
+  then
+    echo "Usage: <installation prefix> <target descriptor>" >&2
+  else
+    echo "Usage: <Darwin Toolchain directory> <target descriptor>" >&2
+  fi
   echo "Available target descriptors:" >&2
   for target_descriptor in target-descriptors/*
   do
@@ -18,17 +36,38 @@ fi
 
 if [ "${TARGET_TYPE}" == "osx" ]
 then
-  DARWIN_SDK=${DARWIN_TOOLCHAIN}/lib/SDKs/MacOSX${DARWIN_SDK_VERSION}.sdk
+  if [ "${PREFIX}" == "" ]
+  then
+    PREFIX=${DARWIN_TOOLCHAIN}/lib/${TARGET_ARCH}-MacOSX-${OSX_MIN_SUPPORTED_VERSION}-SDK${DARWIN_SDK_VERSION}.sdk
+  fi
+  if [ $BUILD_ON_DARWIN -eq 1 ]
+  then
+    DARWIN_SDK=/Application/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX${DARWIN_SDK_VERSION}.sdk
+  else
+    DARWIN_SDK=${DARWIN_TOOLCHAIN}/lib/SDKs/MacOSX${DARWIN_SDK_VERSION}.sdk
+  fi
 elif [ "${TARGET_TYPE}" == "ios" ]
 then
-  DARWIN_SDK=${DARWIN_TOOLCHAIN}/lib/SDKs/iPhoneOS${DARWIN_SDK_VERSION}.sdk
+  if [ "${PREFIX}" == "" ]
+  then
+    PREFIX=${DARWIN_TOOLCHAIN}/lib/${TARGET_ARCH}-iOS-${IOS_MIN_SUPPORTED_VERSION}-SDK${DARWIN_SDK_VERSION}.sdk
+  fi
+  if [ $BUILD_ON_DARWIN -eq 1 ]
+  then
+    DARWIN_SDK=/Application/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS${DARWIN_SDK_VERSION}.sdk
+  else
+    DARWIN_SDK=${DARWIN_TOOLCHAIN}/lib/SDKs/iPhoneOS${DARWIN_SDK_VERSION}.sdk
+  fi
 else
   echo "Unsupported target type \"${TARGET_TYPE}\". Valid types are osx and ios" >&2
   exit 1
 fi
 echo $DARWIN_SDK
 
-PATH="${DARWIN_TOOLCHAIN}/bin:${PATH}"
+if [ $BUILD_ON_DARWIN -eq 0 ]
+then
+  PATH="${DARWIN_TOOLCHAIN}/bin:${PATH}"
+fi
 
 WORKING_DIR="${PWD}"
 BUILD_TMP_DIR="darwin-toolchain-build-temp-${TARGET_DESC}"
@@ -38,10 +77,13 @@ mkdir "${BUILD_TMP_DIR}"
 
 cd "${BUILD_TMP_DIR}"
 
-LINKER_VERSION=`darwin-ld -v 2>&1 | awk 'NR==1 { print $1 }'`
-if [ "${LINKER_VERSION}" == "" ]
+if [ $BUILD_ON_DARWIN -eq 0 ]
 then
-  exit 1
+  LINKER_VERSION=`darwin-ld -v 2>&1 | awk 'NR==1 { print $1 }'`
+  if [ "${LINKER_VERSION}" == "" ]
+  then
+    exit 1
+  fi
 fi
 
 TOOLS_DIR="${PREFIX}/tools"
@@ -52,15 +94,33 @@ CMAKE_TOOLCHAIN_FILE="${TOOLS_DIR}/toolchain.cmake"
 mkdir -p ${TOOLS_DIR} || exit $?
 
 echo \#!/bin/bash > ${CLANG_WRAPPER_FILE} || exit $?
-echo ${DARWIN_TOOLCHAIN}/bin/${TARGET_TRIPLE}-clang -isysroot ${DARWIN_SDK} -mlinker-version=${LINKER_VERSION} \$@ >> ${CLANG_WRAPPER_FILE} || exit $?
+if [ $BUILD_ON_DARWIN -eq 1 ]
+then
+  echo clang -target ${TARGET_TRIPLE} -isysroot ${DARWIN_SDK} \$@ >> ${CLANG_WRAPPER_FILE} || exit $?
+else
+  echo ${DARWIN_TOOLCHAIN}/bin/${TARGET_TRIPLE}-clang -isysroot ${DARWIN_SDK} -mlinker-version=${LINKER_VERSION} \$@ >> ${CLANG_WRAPPER_FILE} || exit $?
+fi
 chmod +x ${CLANG_WRAPPER_FILE} || exit $?
 
 echo \#!/bin/bash > ${CLANGXX_WRAPPER_FILE} || exit $?
-echo ${DARWIN_TOOLCHAIN}/bin/${TARGET_TRIPLE}-clang++ -isysroot ${DARWIN_SDK} -mlinker-version=${LINKER_VERSION} \$@ >> ${CLANGXX_WRAPPER_FILE} || exit $?
+if [ $BUILD_ON_DARWIN -eq 1 ]
+then
+  echo clang++ -target ${TARGET_TRIPLE} -isysroot ${DARWIN_SDK} \$@ >> ${CLANGXX_WRAPPER_FILE} || exit $?
+else
+  echo ${DARWIN_TOOLCHAIN}/bin/${TARGET_TRIPLE}-clang++ -isysroot ${DARWIN_SDK} -mlinker-version=${LINKER_VERSION} \$@ >> ${CLANGXX_WRAPPER_FILE} || exit $?
+fi
 chmod +x ${CLANGXX_WRAPPER_FILE} || exit $?
 
 CC="${CLANG_WRAPPER_FILE}"
 CXX="${CLANGXX_WRAPPER_FILE}"
+if [ $BUILD_ON_DARWIN -eq 1 ]
+then
+  AR="ar"
+  RANLIB="ranlib"
+else
+  AR="${DARWIN_TOOLCHAIN}/bin/${TARGET_TRIPLE}-ar"
+  RANLIB="${DARWIN_TOOLCHAIN}/bin/${TARGET_TRIPLE}-ranlib"
+fi
 
 if [ -f ${CMAKE_TOOLCHAIN_FILE} ]
 then
@@ -69,8 +129,8 @@ fi
 echo set\(CMAKE_SYSTEM_NAME Generic\) >> ${CMAKE_TOOLCHAIN_FILE} || exit $?
 echo set\(CMAKE_C_COMPILER \"${CLANG_WRAPPER_FILE}\"\) >> ${CMAKE_TOOLCHAIN_FILE} || exit $?
 echo set\(CMAKE_CXX_COMPILER \"${CLANGXX_WRAPPER_FILE}\"\) >> ${CMAKE_TOOLCHAIN_FILE} || exit $?
-echo set\(CMAKE_AR \"${DARWIN_TOOLCHAIN}/bin/${TARGET_TRIPLE}-ar\" CACHE FILEPATH \"Archiver\"\) >> ${CMAKE_TOOLCHAIN_FILE} || exit $?
-echo set\(CMAKE_RANLIB \"${DARWIN_TOOLCHAIN}/bin/${TARGET_TRIPLE}-ranlib\"\) >> ${CMAKE_TOOLCHAIN_FILE} || exit $?
+echo set\(CMAKE_AR \"${AR}\" CACHE FILEPATH \"Archiver\"\) >> ${CMAKE_TOOLCHAIN_FILE} || exit $?
+echo set\(CMAKE_RANLIB \"${RANLIB}\"\) >> ${CMAKE_TOOLCHAIN_FILE} || exit $?
 
 if [ $BUILD_LIBCXX -eq 1 ]
 then
@@ -84,7 +144,7 @@ then
     $CXX ${CXXFLAGS} ${src} -I../libcxxabi-rev201497/include -I../libcxx-3.4/include -fstrict-aliasing -std=c++11 -c -o `basename ${src}`.o || exit $?
   done
   echo AR libc++abi.a
-  ${TARGET_TRIPLE}-ar rcs libc++abi.a *.o || exit $?
+  ${AR} rcs libc++abi.a *.o || exit $?
   mkdir -p "${PREFIX}/lib" || exit $?
   cp libc++abi.a "${PREFIX}/lib" || exit $?
   mkdir -p "${PREFIX}/include/libcxxabi" || exit $?
@@ -104,7 +164,7 @@ then
   tar xzvf ../zlib-1.2.8.tar.gz || exit $?
   cd zlib-1.2.8 || exit $?
   ./configure --static "--prefix=${PREFIX}" || exit $?
-  make "CC=$CC" "CFLAGS=${CFLAGS}" AR=${TARGET_TRIPLE}-ar RANLIB=${TARGET_TRIPLE}-ranlib install || exit $?
+  make "CC=$CC" "CFLAGS=${CFLAGS}" "AR=${AR}" "RANLIB=${RANLIB}" install || exit $?
   cd .. || exit $?
 fi
 
