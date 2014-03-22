@@ -6,10 +6,15 @@ TARGET_DESC=$2
 if [ "${DARWIN_TOOLCHAIN}" == "" ] || [ "${TARGET_DESC}" == "" ]
 then
   echo "Usage: <Darwin Toolchain Directory> <Target Descriptor>" >&2
+  echo "Available target descriptors:" >&2
+  for target_descriptor in target-descriptors/*
+  do
+    echo "  `basename ${target_descriptor}`" >&2
+  done
   exit 1
 fi
 
-. "${TARGET_DESC}.shinc" || exit $?
+. "target-descriptors/${TARGET_DESC}" || exit $?
 
 if [ "${TARGET_TYPE}" == "osx" ]
 then
