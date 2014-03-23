@@ -233,6 +233,7 @@ if [ "${TARGET_TYPE}" == "osx" ]
 then
   tar xzvf ../SDL-1.2.15.tar.gz || exit $?
   cd SDL-1.2.15 || exit $?
+  patch -Np0 -i ../../SDL-1.2.15_compile_fix.diff || exit $?
   ./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" --enable-video-x11=no || exit $?
   make -j6 || exit $?
   make install || exit $?
