@@ -229,6 +229,16 @@ make -j6 || exit $?
 make install || exit $?
 cd .. || exit $?
 
+if [ "${TARGET_TYPE}" == "osx" ]
+then
+  tar xzvf ../SDL-1.2.15.tar.gz || exit $?
+  cd SDL-1.2.15 || exit $?
+  ./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" --enable-video-x11=no || exit $?
+  make -j6 || exit $?
+  make install || exit $?
+  cd .. || exit $?
+fi
+
 cd "${WORKING_DIR}"
 rm -rf "${BUILD_TMP_DIR}"
 
