@@ -240,6 +240,12 @@ then
   cd .. || exit $?
 fi
 
+unzip ../glm-0.9.5.2.zip || exit $?
+cd glm || exit $?
+cp -r glm "${PREFIX}/include" || exit $?
+rm -rf "${PREFIX}/include"/*.txt || exit $?
+cd .. || exit $?
+
 cd "${WORKING_DIR}"
 rm -rf "${BUILD_TMP_DIR}"
 
