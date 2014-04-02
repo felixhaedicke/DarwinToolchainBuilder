@@ -13,6 +13,7 @@ curl -L -O http://libsdl.org/release/SDL2-2.0.3.tar.gz || exit $?
 curl -L -O http://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-2.0.0.tar.gz || exit $?
 curl -L -O http://www.libsdl.org/projects/SDL_net/release/SDL2_net-2.0.0.tar.gz || exit $?
 curl -L -O http://ftp.gnu.org/gnu/gettext/gettext-0.18.3.tar.gz || exit $?
+curl -L -O http://curl.haxx.se/download/curl-7.36.0.tar.gz || exit $?
 curl -L -O http://sourceforge.net/projects/libpng/files/zlib/1.2.8/zlib-1.2.8.tar.gz || exit $?
 curl -L -O http://sourceforge.net/projects/libpng/files/libpng16/1.6.10/libpng-1.6.10.tar.gz || exit $?
 curl -L -O http://sourceforge.net/projects/ogl-math/files/glm-0.9.5.2/glm-0.9.5.2.zip || exit $?

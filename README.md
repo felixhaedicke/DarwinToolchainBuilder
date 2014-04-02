@@ -7,7 +7,7 @@ Overview
 --------
 This tool set contains the following shell scripts:
 * build-toolchain.sh: Builds a lighweight LLVM/Clang based toolchain. Does not build a new LLVM toolchain, but uses the tools which you already have on your system. Builds a few tools including the ld64 linker and creates a few required symlinks. This can be used on Linux and probably on other Unix-like operating systems. Not required for building on Mac OS X, of course.
-* build-libs.sh: Builds a set of static libraries, for example SDL, libjpeg-turbo, libpng and freetype. This script can be used on a system with a toolchain built with build-toolchain.sh and on Mac OS X using the tools included in Xcode.
+* build-libs.sh: Builds a set of static libraries, for example SDL, libjpeg-turbo, libpng, freetype and libcurl. This script can be used on a system with a toolchain built with build-toolchain.sh and on Mac OS X using the tools included in Xcode.
 * download-libs.sh: Download the library source tarballs for build-libs.sh.
 * extract_apple_sdks.sh: Extract a Mac OS X / iOS SDK from an Xcode installation.
 
