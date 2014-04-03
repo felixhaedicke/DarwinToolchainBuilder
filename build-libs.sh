@@ -197,12 +197,15 @@ make -j6 || exit $?
 make install || exit $?
 cd ../../.. || exit $?
 
-tar xzvf ../curl-7.36.0.tar.gz || exit $?
-cd curl-7.36.0 || exit $?
-./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --enable-ipv6 --prefix="${PREFIX}" CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
-make -j6 || exit $?
-make install || exit $?
-cd .. || exit $?
+if [ "${TARGET_TYPE}" == "ios" ]
+then
+  tar xzvf ../curl-7.36.0.tar.gz || exit $?
+  cd curl-7.36.0 || exit $?
+  ./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --enable-ipv6 --prefix="${PREFIX}" CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
+  make -j6 || exit $?
+  make install || exit $?
+  cd .. || exit $?
+fi
 
 tar xzvf ../SDL2-2.0.3.tar.gz || exit $?
 cd SDL2-2.0.3 || exit $?
