@@ -79,6 +79,7 @@ cd "${BUILD_TMP_DIR}"
 
 if [ $BUILD_ON_DARWIN -eq 0 ]
 then
+  darwin-ld -v || exit 1
   LINKER_VERSION=`darwin-ld -v 2>&1 | awk 'NR==1 { print $1 }'`
   if [ "${LINKER_VERSION}" == "" ]
   then
