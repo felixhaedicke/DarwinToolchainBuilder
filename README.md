@@ -35,7 +35,7 @@ Installation guide for Debian / Ubuntu users
 --------------------------------------------
 Install required packages:
 
-    apt-get install build-essential clang-3.4 llvm llvm-dev nasm libc++-dev git autotools-dev autoconf automake libtool libssl-dev uuid-dev
+    apt-get install build-essential clang-3.4 libclang-3.4-dev llvm llvm-dev nasm libc++-dev git autotools-dev autoconf automake libtool libssl-dev uuid-dev subversion
 
 Clone this repository
 
