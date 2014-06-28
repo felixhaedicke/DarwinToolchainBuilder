@@ -135,14 +135,14 @@ echo set\(CMAKE_RANLIB \"${RANLIB}\"\) >> ${CMAKE_TOOLCHAIN_FILE} || exit $?
 
 if [ $BUILD_LIBCXX -eq 1 ]
 then
-  tar xzvf ../libcxx-3.4.src.tar.gz || exit $?
+  tar xzvf ../libcxx-3.4.2.src.tar.gz || exit $?
   tar xzvf ../libcxxabi-rev201497.tar.gz || exit $?
   mkdir libcxxabi-build || exit $?
   cd libcxxabi-build || exit $?
   for src in ../libcxxabi-rev201497/src/*.cpp
   do
     echo CXX ${src}
-    $CXX ${CXXFLAGS} ${src} -I../libcxxabi-rev201497/include -I../libcxx-3.4/include -fstrict-aliasing -std=c++11 -c -o `basename ${src}`.o || exit $?
+    $CXX ${CXXFLAGS} ${src} -I../libcxxabi-rev201497/include -I../libcxx-3.4.2/include -fstrict-aliasing -std=c++11 -c -o `basename ${src}`.o || exit $?
   done
   echo AR libc++abi.a
   ${AR} rcs libc++abi.a *.o || exit $?
@@ -154,7 +154,7 @@ then
 
   mkdir libcxx-build || exit $?
   cd libcxx-build || exit $?
-  cmake ../libcxx-3.4 "-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}" -DLIBCXX_CXX_ABI=libcxxabi "-DLIBCXX_LIBCXXABI_INCLUDE_PATHS=${PREFIX}/include/libcxxabi" -DCMAKE_BUILD_TYPE=Release -DLIBCXX_ENABLE_SHARED=false -DLIBCXX_TARGET_TRIPLE=${TARGET_TRIPLE} "-DCMAKE_INSTALL_PREFIX=${PREFIX}" || exit $?
+  cmake ../libcxx-3.4.2 "-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}" -DLIBCXX_CXX_ABI=libcxxabi "-DLIBCXX_LIBCXXABI_INCLUDE_PATHS=${PREFIX}/include/libcxxabi" -DCMAKE_BUILD_TYPE=Release -DLIBCXX_ENABLE_SHARED=false -DLIBCXX_TARGET_TRIPLE=${TARGET_TRIPLE} "-DCMAKE_INSTALL_PREFIX=${PREFIX}" || exit $?
   make -j6 || exit $?
   make install || exit $?
   cd .. || exit $?
@@ -169,8 +169,8 @@ then
   cd .. || exit $?
 fi
 
-tar xzvf ../libpng-1.6.10.tar.gz || exit $?
-cd libpng-1.6.10 || exit $?
+tar xzvf ../libpng-1.6.12.tar.gz || exit $?
+cd libpng-1.6.12 || exit $?
 ./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
 make -j6 || exit $?
 make install || exit $?
@@ -183,15 +183,15 @@ make -j6 || exit $?
 make install || exit $?
 cd .. || exit $?
 
-tar xzvf ../libjpeg-turbo-1.3.0.tar.gz || exit $?
-cd libjpeg-turbo-1.3.0 || exit $?
+tar xzvf ../libjpeg-turbo-1.3.1.tar.gz || exit $?
+cd libjpeg-turbo-1.3.1 || exit $?
 ./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
 make -j6 || exit $?
 make install || exit $?
 cd .. || exit $?
 
-tar xzvf ../gettext-0.18.3.tar.gz || exit $?
-cd gettext-0.18.3 || exit $?
+tar xzvf ../gettext-0.19.1.tar.gz || exit $?
+cd gettext-0.19.1 || exit $?
 ./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
 cd gettext-runtime/intl || exit $?
 make -j6 || exit $?
@@ -200,8 +200,8 @@ cd ../../.. || exit $?
 
 if [ "${TARGET_TYPE}" == "ios" ]
 then
-  tar xzvf ../curl-7.36.0.tar.gz || exit $?
-  cd curl-7.36.0 || exit $?
+  tar xzvf ../curl-7.37.0.tar.gz || exit $?
+  cd curl-7.37.0 || exit $?
   ./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --enable-ipv6 --prefix="${PREFIX}" CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
   make -j6 || exit $?
   make install || exit $?
@@ -251,7 +251,7 @@ then
   cd .. || exit $?
 fi
 
-unzip ../glm-0.9.5.2.zip || exit $?
+unzip ../glm-0.9.5.4.zip || exit $?
 cd glm || exit $?
 cp -r glm "${PREFIX}/include" || exit $?
 rm -rf "${PREFIX}/include"/*.txt || exit $?
