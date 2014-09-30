@@ -57,9 +57,9 @@ else
 
     echo Extracting SDK from ${sdk_dir} using temporary directory ${tmp_dir}...
     
-    cp -R ${sdk_dir} ${tmp_dir} || exit $?
+    cp -r ${sdk_dir} ${tmp_dir} || exit $?
     
-    libcxx_headers_src_dir=${sdk_dir}/../../../../../Toolchains/XcodeDefault.xctoolchain/usr/lib/c++/v1
+    libcxx_headers_src_dir=${sdk_dir}/../../../../../Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1
     libarc_src_dir=${sdk_dir}/../../../../../Toolchains/XcodeDefault.xctoolchain/usr/lib/arc
     libarc_src_filepath=${libarc_src_dir}/libarclite_macosx.a
     if [ $is_ios_sdk -eq 1 ]
@@ -72,7 +72,7 @@ else
       libcxx_headers_target_parent_dir="${tmp_dir}/${sdk_dir_basename}/usr/include/c++"
       if [ ! -d "${libcxx_target_dir}" ]
       then
-        cp -R "${libcxx_headers_src_dir}" "${libcxx_headers_target_parent_dir}" || exit $?
+        cp -r "${libcxx_headers_src_dir}" "${libcxx_headers_target_parent_dir}" || exit $?
       fi
     else
       echo Not extracting libc++ headers, because they were not found in ${libcxx_headers_src_dir}
