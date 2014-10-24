@@ -1,5 +1,7 @@
 #!/bin/bash
 
+. versions.inc
+
 BUILD_ON_DARWIN=0
 if [ "`uname`" == "Darwin" ]
 then
@@ -133,22 +135,22 @@ echo set\(CMAKE_CXX_COMPILER \"${CLANGXX_WRAPPER_FILE}\"\) >> ${CMAKE_TOOLCHAIN_
 echo set\(CMAKE_AR \"${AR}\" CACHE FILEPATH \"Archiver\"\) >> ${CMAKE_TOOLCHAIN_FILE} || exit $?
 echo set\(CMAKE_RANLIB \"${RANLIB}\"\) >> ${CMAKE_TOOLCHAIN_FILE} || exit $?
 
-tar xzvf ../libpng-1.6.14.tar.gz || exit $?
-cd libpng-1.6.14 || exit $?
+tar xzvf ../libpng-${LIB_VERSION_LIBPNG}.tar.gz || exit $?
+cd libpng-${LIB_VERSION_LIBPNG} || exit $?
 ./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
 make -j6 || exit $?
 make install || exit $?
 cd .. || exit $?
 
-tar xzvf ../freetype-2.4.12.tar.gz || exit $?
-cd freetype-2.4.12 || exit $?
+tar xzvf ../freetype-${LIB_VERSION_FREETYPE}.tar.gz || exit $?
+cd freetype-${LIB_VERSION_FREETYPE} || exit $?
 ./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
 make -j6 || exit $?
 make install || exit $?
 cd .. || exit $?
 
-tar xzvf ../libjpeg-turbo-1.3.1.tar.gz || exit $?
-cd libjpeg-turbo-1.3.1 || exit $?
+tar xzvf ../libjpeg-turbo-${LIB_VERSION_LIBJPEG_TURBO}.tar.gz || exit $?
+cd libjpeg-turbo-${LIB_VERSION_LIBJPEG_TURBO} || exit $?
 ./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
 make -j6 || exit $?
 make install || exit $?
@@ -156,16 +158,16 @@ cd .. || exit $?
 
 if [ "${TARGET_TYPE}" == "ios" ]
 then
-  tar xzvf ../curl-7.37.0.tar.gz || exit $?
-  cd curl-7.37.0 || exit $?
+  tar xzvf ../curl-${LIB_VERSION_CURL}.tar.gz || exit $?
+  cd curl-${LIB_VERSION_CURL} || exit $?
   ./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --enable-ipv6 --prefix="${PREFIX}" CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
   make -j6 || exit $?
   make install || exit $?
   cd .. || exit $?
 fi
 
-tar xzvf ../SDL2-2.0.3.tar.gz || exit $?
-cd SDL2-2.0.3 || exit $?
+tar xzvf ../SDL2-${LIB_VERSION_SDL2}.tar.gz || exit $?
+cd SDL2-${LIB_VERSION_SDL2} || exit $?
 ./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
 if [ "${TARGET_TYPE}" == "ios" ]
 then
@@ -175,9 +177,9 @@ make -j6 || exit $?
 make install || exit $?
 cd .. || exit $?
 
-tar xzvf ../SDL2_mixer-2.0.0.tar.gz || exit $?
-cd SDL2_mixer-2.0.0 || exit $?
-cd external/libmodplug-0.8.8.4
+tar xzvf ../SDL2_mixer-${LIB_VERSION_SDL2_MIXER}.tar.gz || exit $?
+cd SDL2_mixer-${LIB_VERSION_SDL2_MIXER} || exit $?
+cd external/libmodplug-${LIB_VERSION_SDL2_MIXER_LIBMODPLUG} || exit $?
 ./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
 make -j6 || exit $?
 make install || exit $?
@@ -189,8 +191,8 @@ sed -i".bak" "s/Requires:/Requires: libmodplug/g" "${PREFIX}/lib/pkgconfig/SDL2_
 rm -rf "${PREFIX}/lib/pkgconfig"/*.bak || exit $?
 cd .. || exit $?
 
-tar xzvf ../SDL2_net-2.0.0.tar.gz || exit $?
-cd SDL2_net-2.0.0 || exit $?
+tar xzvf ../SDL2_net-${LIB_VERSION_SDL2_NET}.tar.gz || exit $?
+cd SDL2_net-${LIB_VERSION_SDL2_NET} || exit $?
 ./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" --with-sdl-prefix="${PREFIX}" CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
 make -j6 || exit $?
 make install || exit $?
@@ -198,15 +200,15 @@ cd .. || exit $?
 
 if [ "${TARGET_TYPE}" == "osx" ]
 then
-  tar xzvf ../SDL-1.2.15.tar.gz || exit $?
-  cd SDL-1.2.15 || exit $?
+  tar xzvf ../SDL-${LIB_VERSION_SDL}.tar.gz || exit $?
+  cd SDL-${LIB_VERSION_SDL} || exit $?
   ./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" --enable-video-x11=no || exit $?
   make -j6 || exit $?
   make install || exit $?
   cd .. || exit $?
 fi
 
-unzip ../glm-0.9.5.4.zip || exit $?
+unzip ../glm-${LIB_VERSION_GLM}.zip || exit $?
 cd glm || exit $?
 cp -r glm "${PREFIX}/include" || exit $?
 rm -rf "${PREFIX}/include"/*.txt || exit $?
