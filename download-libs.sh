@@ -15,6 +15,6 @@ curl -L -O http://www.libsdl.org/projects/SDL_net/release/SDL2_net-2.0.0.tar.gz 
 curl -L -O http://ftp.gnu.org/gnu/gettext/gettext-0.19.1.tar.gz || exit $?
 curl -L -O http://curl.haxx.se/download/curl-7.37.0.tar.gz || exit $?
 curl -L -O http://sourceforge.net/projects/libpng/files/zlib/1.2.8/zlib-1.2.8.tar.gz || exit $?
-curl -L -O http://sourceforge.net/projects/libpng/files/libpng16/1.6.12/libpng-1.6.12.tar.gz || exit $?
+curl -L -O http://sourceforge.net/projects/libpng/files/libpng16/1.6.12/libpng-1.6.14.tar.gz || exit $?
 curl -L -O http://sourceforge.net/projects/ogl-math/files/glm-0.9.5.4/glm-0.9.5.4.zip || exit $?
 
