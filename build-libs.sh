@@ -133,42 +133,6 @@ echo set\(CMAKE_CXX_COMPILER \"${CLANGXX_WRAPPER_FILE}\"\) >> ${CMAKE_TOOLCHAIN_
 echo set\(CMAKE_AR \"${AR}\" CACHE FILEPATH \"Archiver\"\) >> ${CMAKE_TOOLCHAIN_FILE} || exit $?
 echo set\(CMAKE_RANLIB \"${RANLIB}\"\) >> ${CMAKE_TOOLCHAIN_FILE} || exit $?
 
-if [ $BUILD_LIBCXX -eq 1 ]
-then
-  tar xzvf ../libcxx-3.4.2.src.tar.gz || exit $?
-  tar xzvf ../libcxxabi-rev201497.tar.gz || exit $?
-  mkdir libcxxabi-build || exit $?
-  cd libcxxabi-build || exit $?
-  for src in ../libcxxabi-rev201497/src/*.cpp
-  do
-    echo CXX ${src}
-    $CXX ${CXXFLAGS} ${src} -I../libcxxabi-rev201497/include -I../libcxx-3.4.2/include -fstrict-aliasing -std=c++11 -c -o `basename ${src}`.o || exit $?
-  done
-  echo AR libc++abi.a
-  ${AR} rcs libc++abi.a *.o || exit $?
-  mkdir -p "${PREFIX}/lib" || exit $?
-  cp libc++abi.a "${PREFIX}/lib" || exit $?
-  mkdir -p "${PREFIX}/include/libcxxabi" || exit $?
-  cp -r ../libcxxabi-rev201497/include/* "${PREFIX}/include/libcxxabi" || exit $?
-  cd .. || exit $?
-
-  mkdir libcxx-build || exit $?
-  cd libcxx-build || exit $?
-  cmake ../libcxx-3.4.2 "-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}" -DLIBCXX_CXX_ABI=libcxxabi "-DLIBCXX_LIBCXXABI_INCLUDE_PATHS=${PREFIX}/include/libcxxabi" -DCMAKE_BUILD_TYPE=Release -DLIBCXX_ENABLE_SHARED=false -DLIBCXX_TARGET_TRIPLE=${TARGET_TRIPLE} "-DCMAKE_INSTALL_PREFIX=${PREFIX}" || exit $?
-  make -j6 || exit $?
-  make install || exit $?
-  cd .. || exit $?
-fi
-
-if [ $BUILD_ZLIB -eq 1 ]
-then
-  tar xzvf ../zlib-1.2.8.tar.gz || exit $?
-  cd zlib-1.2.8 || exit $?
-  ./configure --static "--prefix=${PREFIX}" || exit $?
-  make "CC=$CC" "CFLAGS=${CFLAGS}" "AR=${AR}" "RANLIB=${RANLIB}" install || exit $?
-  cd .. || exit $?
-fi
-
 tar xzvf ../libpng-1.6.14.tar.gz || exit $?
 cd libpng-1.6.14 || exit $?
 ./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
@@ -244,7 +208,6 @@ if [ "${TARGET_TYPE}" == "osx" ]
 then
   tar xzvf ../SDL-1.2.15.tar.gz || exit $?
   cd SDL-1.2.15 || exit $?
-  patch -Np0 -i ../../SDL-1.2.15_compile_fix.diff || exit $?
   ./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" --enable-video-x11=no || exit $?
   make -j6 || exit $?
   make install || exit $?
