@@ -154,14 +154,6 @@ make -j6 || exit $?
 make install || exit $?
 cd .. || exit $?
 
-tar xzvf ../gettext-0.19.1.tar.gz || exit $?
-cd gettext-0.19.1 || exit $?
-./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
-cd gettext-runtime/intl || exit $?
-make -j6 || exit $?
-make install || exit $?
-cd ../../.. || exit $?
-
 if [ "${TARGET_TYPE}" == "ios" ]
 then
   tar xzvf ../curl-7.37.0.tar.gz || exit $?
