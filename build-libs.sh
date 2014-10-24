@@ -147,6 +147,7 @@ cd freetype-${LIB_VERSION_FREETYPE} || exit $?
 ./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
 make -j6 || exit $?
 make install || exit $?
+sed -i "s/zlib,//g" "${PREFIX}/lib/pkgconfig/freetype2.pc" || exit $?
 cd .. || exit $?
 
 tar xzvf ../libjpeg-turbo-${LIB_VERSION_LIBJPEG_TURBO}.tar.gz || exit $?
