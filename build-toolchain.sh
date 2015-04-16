@@ -25,7 +25,7 @@ make install || exit $?
 
 cd "${PREFIX}/bin" || exit $?
 ln -s darwin-codesign_allocate codesign_allocate || exit $?
-for triple in powerpc-apple-darwin9 i386-apple-darwin9 x86_64-apple-darwin9 armv7-apple-darwin9
+for triple in i386-apple-darwin x86_64-apple-darwin armv7-apple-darwin aarch64-apple-darwin
 do
   ln -s `which clang` $triple-clang || exit $?
   ln -s `which clang++` $triple-clang++ || exit $?
