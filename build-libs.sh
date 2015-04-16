@@ -125,29 +125,39 @@ echo set\(CMAKE_CXX_COMPILER \"${CLANGXX_WRAPPER_FILE}\"\) >> ${CMAKE_TOOLCHAIN_
 echo set\(CMAKE_AR \"${AR}\" CACHE FILEPATH \"Archiver\"\) >> ${CMAKE_TOOLCHAIN_FILE} || exit $?
 echo set\(CMAKE_RANLIB \"${RANLIB}\"\) >> ${CMAKE_TOOLCHAIN_FILE} || exit $?
 
-tar xzvf ../libpng-${LIB_VERSION_LIBPNG}.tar.gz || exit $?
-cd libpng-${LIB_VERSION_LIBPNG} || exit $?
-./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
-make -j6 || exit $?
-make install || exit $?
-cd .. || exit $?
+if [ ${BUILD_LIBPNG} == true ]
+then
+  tar xzvf ../libpng-${LIB_VERSION_LIBPNG}.tar.gz || exit $?
+  cd libpng-${LIB_VERSION_LIBPNG} || exit $?
+  ./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
+  make -j6 || exit $?
+  make install || exit $?
+  cd .. || exit $?
+fi
 
-tar xzvf ../freetype-${LIB_VERSION_FREETYPE}.tar.gz || exit $?
-cd freetype-${LIB_VERSION_FREETYPE} || exit $?
-./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
-make -j6 || exit $?
-make install || exit $?
-sed -i "s/zlib,//g" "${PREFIX}/lib/pkgconfig/freetype2.pc" || exit $?
-cd .. || exit $?
+if [ ${BUILD_FREETYPE} == true ]
+then
+  tar xzvf ../freetype-${LIB_VERSION_FREETYPE}.tar.gz || exit $?
+  cd freetype-${LIB_VERSION_FREETYPE} || exit $?
+  ./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
+  make -j6 || exit $?
+  make install || exit $?
+  sed -i "s/zlib,//g" "${PREFIX}/lib/pkgconfig/freetype2.pc" || exit $?
+  cd .. || exit $?
+fi
 
-tar xzvf ../libjpeg-turbo-${LIB_VERSION_LIBJPEG_TURBO}.tar.gz || exit $?
-cd libjpeg-turbo-${LIB_VERSION_LIBJPEG_TURBO} || exit $?
-./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
-make -j6 || exit $?
-make install || exit $?
-cd .. || exit $?
+if [ ${BUILD_LIBJPEG_TURBO} == true ]
+then
+  tar xzvf ../libjpeg-turbo-${LIB_VERSION_LIBJPEG_TURBO}.tar.gz || exit $?
+  cd libjpeg-turbo-${LIB_VERSION_LIBJPEG_TURBO} || exit $?
+  cp ../libpng-${LIB_VERSION_LIBPNG}/config.sub . || exit $?
+  ./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
+  make -j6 || exit $?
+  make install || exit $?
+  cd .. || exit $?
+fi
 
-if [ "${TARGET_TYPE}" == "ios" ]
+if [ ${BUILD_CURL} == true ]
 then
   tar xzvf ../curl-${LIB_VERSION_CURL}.tar.gz || exit $?
   cd curl-${LIB_VERSION_CURL} || exit $?
@@ -157,53 +167,61 @@ then
   cd .. || exit $?
 fi
 
-tar xzvf ../SDL2-${LIB_VERSION_SDL2}.tar.gz || exit $?
-cd SDL2-${LIB_VERSION_SDL2} || exit $?
-./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
-if [ "${TARGET_TYPE}" == "ios" ]
+if [ ${BUILD_SDL2} == true ]
 then
-  cp include/SDL_config_iphoneos.h include/SDL_config.h || exit $?
-fi
-make -j6 || exit $?
-make install || exit $?
-cd .. || exit $?
-
-tar xzvf ../SDL2_mixer-${LIB_VERSION_SDL2_MIXER}.tar.gz || exit $?
-cd SDL2_mixer-${LIB_VERSION_SDL2_MIXER} || exit $?
-cd external/libmodplug-${LIB_VERSION_SDL2_MIXER_LIBMODPLUG} || exit $?
-./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
-make -j6 || exit $?
-make install || exit $?
-cd ../../ || exit $?
-PKG_CONFIG_PATH="${PREFIX}/lib/pkgconfig" ./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" --with-sdl-prefix="${PREFIX}" --enable-music-midi-native=no CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
-make LDFLAGS="-lstdc++" -j6 || exit $?
-make install || exit $?
-sed -i".bak" "s/Requires:/Requires: libmodplug/g" "${PREFIX}/lib/pkgconfig/SDL2_mixer.pc" || exit $?
-rm -rf "${PREFIX}/lib/pkgconfig"/*.bak || exit $?
-cd .. || exit $?
-
-tar xzvf ../SDL2_net-${LIB_VERSION_SDL2_NET}.tar.gz || exit $?
-cd SDL2_net-${LIB_VERSION_SDL2_NET} || exit $?
-./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" --with-sdl-prefix="${PREFIX}" CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
-make -j6 || exit $?
-make install || exit $?
-cd .. || exit $?
-
-if [ "${TARGET_TYPE}" == "osx" ]
-then
-  tar xzvf ../SDL-${LIB_VERSION_SDL}.tar.gz || exit $?
-  cd SDL-${LIB_VERSION_SDL} || exit $?
-  ./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" --enable-video-x11=no || exit $?
+  tar xzvf ../SDL2-${LIB_VERSION_SDL2}.tar.gz || exit $?
+  cd SDL2-${LIB_VERSION_SDL2} || exit $?
+  if [ "${TARGET_TYPE}" == "ios" ]
+  then
+    sed -i "s/arm\*-apple-darwin\*)/${TARGET_TRIPLE}\*)/g" configure
+  fi
+  ./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
+  if [ "${TARGET_TYPE}" == "ios" ]
+  then
+    cp include/SDL_config_iphoneos.h include/SDL_config.h || exit $?
+  fi
   make -j6 || exit $?
   make install || exit $?
   cd .. || exit $?
 fi
 
-unzip ../glm-${LIB_VERSION_GLM}.zip || exit $?
-cd glm || exit $?
-cp -r glm "${PREFIX}/include" || exit $?
-rm -rf "${PREFIX}/include"/*.txt || exit $?
-cd .. || exit $?
+if [ ${BUILD_SDL2_MIXER} == true ]
+then
+  tar xzvf ../SDL2_mixer-${LIB_VERSION_SDL2_MIXER}.tar.gz || exit $?
+  cd SDL2_mixer-${LIB_VERSION_SDL2_MIXER} || exit $?
+  cd external/libmodplug-${LIB_VERSION_SDL2_MIXER_LIBMODPLUG} || exit $?
+  ./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
+  make -j6 || exit $?
+  make install || exit $?
+  cd ../../ || exit $?
+  PKG_CONFIG_PATH="${PREFIX}/lib/pkgconfig" ./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" --with-sdl-prefix="${PREFIX}" --enable-music-midi-native=no CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
+  make LDFLAGS="-lstdc++" -j6 || exit $?
+  make install || exit $?
+  sed -i".bak" "s/Requires:/Requires: libmodplug/g" "${PREFIX}/lib/pkgconfig/SDL2_mixer.pc" || exit $?
+  rm -rf "${PREFIX}/lib/pkgconfig"/*.bak || exit $?
+  cd .. || exit $?
+fi
+
+
+if [ ${BUILD_SDL2_NET} == true ]
+then
+  tar xzvf ../SDL2_net-${LIB_VERSION_SDL2_NET}.tar.gz || exit $?
+  cd SDL2_net-${LIB_VERSION_SDL2_NET} || exit $?
+  ./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" --with-sdl-prefix="${PREFIX}" CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
+  make -j6 || exit $?
+  make install || exit $?
+  cd .. || exit $?
+fi
+
+if [ ${BUILD_GLM} == true ]
+then
+  unzip ../glm-${LIB_VERSION_GLM}.zip || exit $?
+  cd glm || exit $?
+  patch -Np1 -i ../../glm-fix-compiler-detection.patch || exit $?
+  cp -r glm "${PREFIX}/include" || exit $?
+  rm -rf "${PREFIX}/include"/*.txt || exit $?
+  cd .. || exit $?
+fi
 
 cd "${WORKING_DIR}"
 rm -rf "${BUILD_TMP_DIR}"
