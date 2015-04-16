@@ -142,7 +142,7 @@ then
   ./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" --with-harfbuzz=no CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
   make -j6 || exit $?
   make install || exit $?
-  sed -i "s/zlib,//g" "${PREFIX}/lib/pkgconfig/freetype2.pc" || exit $?
+  sed -i "" "s/zlib,//g" "${PREFIX}/lib/pkgconfig/freetype2.pc" || exit $?
   cd .. || exit $?
 fi
 
