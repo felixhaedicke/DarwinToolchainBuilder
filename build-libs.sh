@@ -175,7 +175,7 @@ then
   then
     sed -i "s/arm\*-apple-darwin\*)/${TARGET_TRIPLE}\*)/g" configure
   fi
-  ./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
+  ./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" --enable-video-x11=no CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
   if [ "${TARGET_TYPE}" == "ios" ]
   then
     cp include/SDL_config_iphoneos.h include/SDL_config.h || exit $?
