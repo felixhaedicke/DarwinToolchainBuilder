@@ -79,16 +79,6 @@ mkdir "${BUILD_TMP_DIR}"
 
 cd "${BUILD_TMP_DIR}"
 
-if [ $BUILD_ON_DARWIN -eq 0 ]
-then
-  darwin-ld -v || exit 1
-  LINKER_VERSION=`darwin-ld -v 2>&1 | awk 'NR==1 { print $1 }'`
-  if [ "${LINKER_VERSION}" == "" ]
-  then
-    exit 1
-  fi
-fi
-
 TOOLS_DIR="${PREFIX}/tools"
 CLANG_WRAPPER_FILE="${TOOLS_DIR}/cc"
 CLANGXX_WRAPPER_FILE="${TOOLS_DIR}/c++"
@@ -101,7 +91,7 @@ if [ $BUILD_ON_DARWIN -eq 1 ]
 then
   echo clang -target ${TARGET_TRIPLE} -isysroot ${DARWIN_SDK} \$@ >> ${CLANG_WRAPPER_FILE} || exit $?
 else
-  echo ${DARWIN_TOOLCHAIN}/bin/${TARGET_TRIPLE}-clang -isysroot ${DARWIN_SDK} -mlinker-version=${LINKER_VERSION} \$@ >> ${CLANG_WRAPPER_FILE} || exit $?
+  echo ${DARWIN_TOOLCHAIN}/bin/${TARGET_TRIPLE}-clang -isysroot ${DARWIN_SDK} \$@ >> ${CLANG_WRAPPER_FILE} || exit $?
 fi
 chmod +x ${CLANG_WRAPPER_FILE} || exit $?
 
@@ -110,7 +100,7 @@ if [ $BUILD_ON_DARWIN -eq 1 ]
 then
   echo clang++ -target ${TARGET_TRIPLE} -isysroot ${DARWIN_SDK} \$@ >> ${CLANGXX_WRAPPER_FILE} || exit $?
 else
-  echo ${DARWIN_TOOLCHAIN}/bin/${TARGET_TRIPLE}-clang++ -isysroot ${DARWIN_SDK} -mlinker-version=${LINKER_VERSION} \$@ >> ${CLANGXX_WRAPPER_FILE} || exit $?
+  echo ${DARWIN_TOOLCHAIN}/bin/${TARGET_TRIPLE}-clang++ -isysroot ${DARWIN_SDK} \$@ >> ${CLANGXX_WRAPPER_FILE} || exit $?
 fi
 chmod +x ${CLANGXX_WRAPPER_FILE} || exit $?
 
