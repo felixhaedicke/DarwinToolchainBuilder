@@ -89,18 +89,18 @@ mkdir -p ${TOOLS_DIR} || exit $?
 echo \#!/bin/bash > ${CLANG_WRAPPER_FILE} || exit $?
 if [ $BUILD_ON_DARWIN -eq 1 ]
 then
-  echo clang -target ${TARGET_TRIPLE} -isysroot ${DARWIN_SDK} \$@ >> ${CLANG_WRAPPER_FILE} || exit $?
+  echo clang -target ${TARGET_TRIPLE} -arch ${TARGET_ARCH} -isysroot ${DARWIN_SDK} \$@ >> ${CLANG_WRAPPER_FILE} || exit $?
 else
-  echo ${DARWIN_TOOLCHAIN}/bin/${TARGET_TRIPLE}-clang -isysroot ${DARWIN_SDK} \$@ >> ${CLANG_WRAPPER_FILE} || exit $?
+  echo ${DARWIN_TOOLCHAIN}/bin/${TARGET_TRIPLE}-clang -arch ${TARGET_ARCH} -isysroot ${DARWIN_SDK} \$@ >> ${CLANG_WRAPPER_FILE} || exit $?
 fi
 chmod +x ${CLANG_WRAPPER_FILE} || exit $?
 
 echo \#!/bin/bash > ${CLANGXX_WRAPPER_FILE} || exit $?
 if [ $BUILD_ON_DARWIN -eq 1 ]
 then
-  echo clang++ -target ${TARGET_TRIPLE} -isysroot ${DARWIN_SDK} \$@ >> ${CLANGXX_WRAPPER_FILE} || exit $?
+  echo clang++ -target ${TARGET_TRIPLE} -arch ${TARGET_ARCH} -isysroot ${DARWIN_SDK} \$@ >> ${CLANGXX_WRAPPER_FILE} || exit $?
 else
-  echo ${DARWIN_TOOLCHAIN}/bin/${TARGET_TRIPLE}-clang++ -isysroot ${DARWIN_SDK} \$@ >> ${CLANGXX_WRAPPER_FILE} || exit $?
+  echo ${DARWIN_TOOLCHAIN}/bin/${TARGET_TRIPLE}-clang++ -arch ${TARGET_ARCH} -isysroot ${DARWIN_SDK} \$@ >> ${CLANGXX_WRAPPER_FILE} || exit $?
 fi
 chmod +x ${CLANGXX_WRAPPER_FILE} || exit $?
 
