@@ -139,7 +139,7 @@ if [ ${BUILD_FREETYPE} == true ]
 then
   tar xzvf ../freetype-${LIB_VERSION_FREETYPE}.tar.gz || exit $?
   cd freetype-${LIB_VERSION_FREETYPE} || exit $?
-  ./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
+  ./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" --with-harfbuzz=no CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
   make -j6 || exit $?
   make install || exit $?
   sed -i "s/zlib,//g" "${PREFIX}/lib/pkgconfig/freetype2.pc" || exit $?
