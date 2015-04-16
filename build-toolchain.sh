@@ -32,6 +32,9 @@ do
   ln -s `which clang` $triple-cc || exit $?
   ln -s `which clang++` $triple-c++ || exit $?
   ln -s `which clang` $triple-as || exit $?
+  ln -s `which llc` $triple-llc || exit $?
+  ln -s `which llvm-link` $triple-llvm-link || exit $?
+  ln -s `which opt` $triple-opt || exit $?
   ln -s darwin-nm $triple-nm || exit $?
   ln -s darwin-ranlib $triple-ranlib || exit $?
   ln -s darwin-ar $triple-ar || exit $?
