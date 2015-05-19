@@ -25,9 +25,10 @@ Download the source tarballs by executing ./download-libs.sh
 
 Execute the build-libs.sh script for the library sets you want to build, for example
 
-    ./build-libs.sh $HOME/libs/armv7-iOS-5.1-SDK7.1 armv7-iOS-5.1-SDK7.1
-    ./build-libs.sh $HOME/libs/i386-MacOSX-10.7-SDK10.9 i386-MacOSX-10.7-SDK10.9
-    ./build-libs.sh $HOME/libs/x86_64-MacOSX-10.7-SDK10.9 x86_64-MacOSX-10.7-SDK10.9
+    ./build-libs.sh $HOME/libs/i386-MacOSX-10.6-SDK10.10 i386-MacOSX-10.6-SDK10.10
+    ./build-libs.sh $HOME/libs/x86_64-MacOSX-10.6-SDK10.10 x86_64-MacOSX-10.6-SDK10.10
+    ./build-libs.sh $HOME/libs/armv7-iOS-5.1-SDK8.3 armv7-iOS-5.1-SDK8.3
+    ./build-libs.sh $HOME/libs/arm64-iOS-7.0-SDK8.3 arm64-iOS-7.0-SDK8.3
 
 This will build the library sets for iOS / armv7 and install them to $HOME/libs/armv7-iOS-5.1-SDK7.1, the Mac OS x86 libraries to $HOME/libs/i386-MacOSX-10.7-SDK10.9 and the Mac OS X x86_64 libraries to $HOME/libs/x86_64-MacOSX-10.7-SDK10.9
 
@@ -35,7 +36,7 @@ Installation guide for Debian / Ubuntu users
 --------------------------------------------
 Install required packages:
 
-    apt-get install build-essential clang-3.4 libclang-3.4-dev llvm llvm-dev nasm libc++-dev git autotools-dev autoconf automake libtool libssl-dev uuid-dev subversion
+    apt-get install build-essential clang libclang-dev llvm llvm-dev nasm libc++-dev git autotools-dev autoconf automake libtool libssl-dev uuid-dev subversion
 
 Clone this repository
 
@@ -47,16 +48,17 @@ Install the required SDKs (which can be extracted using extract_apple_sdks.sh) t
 
     mkdir -p $HOME/darwin-toolchain/lib/SDKs
     cd $HOME/darwin-toolchain/lib/SDKs
-    tar xzvf iPhoneOS7.1.sdk.tar.gz
-    tar xzvf MacOSX10.9.sdk.tar.gz
+    tar xzvf iPhoneOS8.3.sdk.tar.gz
+    tar xzvf MacOSX10.10.sdk.tar.gz
 
 Download the source tarballs by executing ./download-libs.sh
 
 Execute the build-libs.sh script for the library sets you want to build, for example
 
-    ./build-libs.sh $HOME/darwin-toolchain armv7-iOS-5.1-SDK7.1
-    ./build-libs.sh $HOME/darwin-toolchain i386-MacOSX-10.7-SDK10.9
-    ./build-libs.sh $HOME/darwin-toolchain x86_64-MacOSX-10.7-SDK10.9
+    ./build-libs.sh $HOME/darwin-toolchain i386-MacOSX-10.6-SDK10.10
+    ./build-libs.sh $HOME/darwin-toolchain x86_64-MacOSX-10.6-SDK10.10
+    ./build-libs.sh $HOME/darwin-toolchain armv7-iOS-5.1-SDK8.3
+    ./build-libs.sh $HOME/darwin-toolchain arm64-iOS-7.0-SDK8.3
 
 The libraries will be installed the libraries in $HOME/darwin-toolchain/lib/<target descriptors>
 
