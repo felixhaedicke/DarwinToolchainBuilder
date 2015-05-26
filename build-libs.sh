@@ -142,7 +142,12 @@ then
   ./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" --with-harfbuzz=no CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
   make -j6 || exit $?
   make install || exit $?
-  sed -i "" "s/zlib,//g" "${PREFIX}/lib/pkgconfig/freetype2.pc" || exit $?
+  if [ $BUILD_ON_DARWIN -eq 1 ]
+  then
+    sed -i "" "s/zlib,//g" "${PREFIX}/lib/pkgconfig/freetype2.pc" || exit $?
+  else
+    sed -i "s/zlib,//g" "${PREFIX}/lib/pkgconfig/freetype2.pc" || exit $?
+  fi
   cd .. || exit $?
 fi
 
@@ -173,7 +178,12 @@ then
   cd SDL2-${LIB_VERSION_SDL2} || exit $?
   if [ "${TARGET_TYPE}" == "ios" ]
   then
-    sed -i "s/arm\*-apple-darwin\*)/${TARGET_TRIPLE}\*)/g" configure
+    if [ $BUILD_ON_DARWIN -eq 1 ]
+    then
+      sed -i "" "s/arm\*-apple-darwin\*)/${TARGET_TRIPLE}\*)/g" configure || exit $?
+    else
+      sed -i "s/arm\*-apple-darwin\*)/${TARGET_TRIPLE}\*)/g" configure || exit $?
+    fi
   fi
   ./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" --enable-video-x11=no CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
   if [ "${TARGET_TYPE}" == "ios" ]
@@ -197,7 +207,12 @@ then
   PKG_CONFIG_PATH="${PREFIX}/lib/pkgconfig" ./configure --host="${TARGET_TRIPLE}" --enable-static=yes --enable-shared=no --prefix="${PREFIX}" --with-sdl-prefix="${PREFIX}" --enable-music-midi-native=no CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CFLAGS}" || exit $?
   make LDFLAGS="-lstdc++" -j6 || exit $?
   make install || exit $?
-  sed -i".bak" "s/Requires:/Requires: libmodplug/g" "${PREFIX}/lib/pkgconfig/SDL2_mixer.pc" || exit $?
+  if [ $BUILD_ON_DARWIN -eq 1 ]
+  then
+    sed -i "" "s/Requires:/Requires: libmodplug/g" "${PREFIX}/lib/pkgconfig/SDL2_mixer.pc" || exit $?
+  else
+    sed -i "s/Requires:/Requires: libmodplug/g" "${PREFIX}/lib/pkgconfig/SDL2_mixer.pc" || exit $?
+  fi
   rm -rf "${PREFIX}/lib/pkgconfig"/*.bak || exit $?
   cd .. || exit $?
 fi
