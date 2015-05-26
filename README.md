@@ -25,8 +25,8 @@ Download the source tarballs by executing ./download-libs.sh
 
 Execute the build-libs.sh script for the library sets you want to build, for example
 
-    ./build-libs.sh $HOME/libs/i386-MacOSX-10.6-SDK10.10 i386-MacOSX-10.6-SDK10.10
-    ./build-libs.sh $HOME/libs/x86_64-MacOSX-10.6-SDK10.10 x86_64-MacOSX-10.6-SDK10.10
+    ./build-libs.sh $HOME/libs/i386-MacOSX-10.7-SDK10.10 i386-MacOSX-10.7-SDK10.10
+    ./build-libs.sh $HOME/libs/x86_64-MacOSX-10.7-SDK10.10 x86_64-MacOSX-10.7-SDK10.10
     ./build-libs.sh $HOME/libs/armv7-iOS-5.1-SDK8.3 armv7-iOS-5.1-SDK8.3
     ./build-libs.sh $HOME/libs/arm64-iOS-7.0-SDK8.3 arm64-iOS-7.0-SDK8.3
 
@@ -55,8 +55,8 @@ Download the source tarballs by executing ./download-libs.sh
 
 Execute the build-libs.sh script for the library sets you want to build, for example
 
-    ./build-libs.sh $HOME/darwin-toolchain i386-MacOSX-10.6-SDK10.10
-    ./build-libs.sh $HOME/darwin-toolchain x86_64-MacOSX-10.6-SDK10.10
+    ./build-libs.sh $HOME/darwin-toolchain i386-MacOSX-10.7-SDK10.10
+    ./build-libs.sh $HOME/darwin-toolchain x86_64-MacOSX-10.7-SDK10.10
     ./build-libs.sh $HOME/darwin-toolchain armv7-iOS-5.1-SDK8.3
     ./build-libs.sh $HOME/darwin-toolchain arm64-iOS-7.0-SDK8.3
 
