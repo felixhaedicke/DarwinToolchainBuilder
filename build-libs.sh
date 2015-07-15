@@ -190,6 +190,10 @@ then
   then
     cp include/SDL_config_iphoneos.h include/SDL_config.h || exit $?
   fi
+  if [ "${TARGET_TYPE}" == "ios" ]
+  then
+    sed -i "s/${CFLAGS}/${CFLAGS} -x objective-c -fobjc-arc/g" Makefile || exit $?
+  fi
   make -j6 || exit $?
   make install || exit $?
   cd .. || exit $?
