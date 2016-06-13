@@ -145,8 +145,10 @@ then
   if [ $BUILD_ON_DARWIN -eq 1 ]
   then
     sed -i "" "s/zlib,//g" "${PREFIX}/lib/pkgconfig/freetype2.pc" || exit $?
+    sed -i "" "s/zlib//g" "${PREFIX}/lib/pkgconfig/freetype2.pc" || exit $?
   else
     sed -i "s/zlib,//g" "${PREFIX}/lib/pkgconfig/freetype2.pc" || exit $?
+    sed -i "s/zlib//g" "${PREFIX}/lib/pkgconfig/freetype2.pc" || exit $?
   fi
   cd .. || exit $?
 fi
