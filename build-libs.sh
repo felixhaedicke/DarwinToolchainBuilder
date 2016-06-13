@@ -236,7 +236,6 @@ if [ ${BUILD_GLM} == true ]
 then
   unzip ../glm-${LIB_VERSION_GLM}.zip || exit $?
   cd glm || exit $?
-  patch -Np1 -i ../../glm-fix-compiler-detection.patch || exit $?
   cp -r glm "${PREFIX}/include" || exit $?
   rm -rf "${PREFIX}/include"/*.txt || exit $?
   cd .. || exit $?
