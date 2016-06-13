@@ -9,5 +9,5 @@ curl -L -O http://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-${LIB_VER
 curl -L -O http://www.libsdl.org/projects/SDL_net/release/SDL2_net-${LIB_VERSION_SDL2_NET}.tar.gz || exit $?
 curl -L -O http://curl.haxx.se/download/curl-${LIB_VERSION_CURL}.tar.gz || exit $?
 curl -L -O http://sourceforge.net/projects/libpng/files/libpng16/${LIB_VERSION_LIBPNG}/libpng-${LIB_VERSION_LIBPNG}.tar.gz || exit $?
-curl -L -O http://sourceforge.net/projects/ogl-math/files/glm-${LIB_VERSION_GLM}/glm-${LIB_VERSION_GLM}.zip || exit $?
+curl -L -O https://github.com/g-truc/glm/releases/download/${LIB_VERSION_GLM}/glm-${LIB_VERSION_GLM}.zip || exit $?
 
